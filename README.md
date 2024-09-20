@@ -1,4 +1,4 @@
-# M_VBA
+# M-VBA
 Another gba emulator for miyoo, this is my attemp to make it work on miyoo
 
 # Note
