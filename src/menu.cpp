@@ -189,10 +189,13 @@ static void Input_Remapping()
 	while(!exit_input)
 	{
 		pressed = 0;
-		SDL_FillRect( backbuffer, NULL, SDL_MapRGB(backbuffer->format, 0, 20, 80));
+		SDL_FillRect( backbuffer, NULL, SDL_MapRGB(backbuffer->format, 0, 0, 0));
 		
         while (SDL_PollEvent(&Event))
         {
+            if(Event.type == SDL_QUIT)
+                SDL_Quit();
+            
             if (Event.type == SDL_KEYDOWN)
             {
                 switch(Event.key.keysym.sym)
@@ -249,7 +252,7 @@ static void Input_Remapping()
 					exit_map = 0;
 					while( !exit_map )
 					{
-						SDL_FillRect( backbuffer, NULL, SDL_MapRGB(backbuffer->format, 0, 20, 80));
+						SDL_FillRect( backbuffer, NULL, SDL_MapRGB(backbuffer->format, 0, 0, 0));
 						print_string("Please press button for mapping", TextWhite, TextBlue, 37, 108, (uint16_t*) backbuffer->pixels);
 						while (SDL_PollEvent(&Event))
 						{
@@ -339,7 +342,7 @@ void Menu()
     {
         pressed = 0;
         
-        SDL_FillRect( backbuffer, NULL, SDL_MapRGB(backbuffer->format, 0, 20, 80));
+        SDL_FillRect( backbuffer, NULL, SDL_MapRGB(backbuffer->format, 0, 0, 0));
 
 		print_string("m-vba - Built on " __DATE__, TextWhite, 0, 5, 15, (uint16_t*) backbuffer->pixels);
 		
@@ -372,6 +375,9 @@ void Menu()
 		
         while (SDL_PollEvent(&Event))
         {
+            if(Event.type == SDL_QUIT)
+                SDL_Quit();
+
             if (Event.type == SDL_KEYDOWN)
             {
                 switch(Event.key.keysym.sym)

@@ -116,26 +116,39 @@ uint32_t Audio_Init()
 
 void Audio_Write(int16_t* buffer, uint32_t buffer_size)
 {
-	long ret, len;
+    if (!handle) return;
 
-	if (!handle) return;
-	
-	len = buffer_size;
-	
-	ret = snd_pcm_writei(handle, buffer, len);
-	while(ret != len) 
-	{
-		if (ret < 0) 
-		{
-			snd_pcm_prepare( handle );
-		}
-		else 
-		{
-			len -= ret;
-		}
-		ret = snd_pcm_writei(handle, buffer, len);
-	}
+    int frames_written, total_frames = buffer_size;
+    int16_t* ptr = buffer;
+
+    while (total_frames > 0)
+    {
+        frames_written = snd_pcm_writei(handle, ptr, total_frames);
+
+        if (frames_written < 0)
+        {
+            if (frames_written == -EPIPE)  // Underrun
+            {
+                snd_pcm_prepare(handle);  // Reset the stream
+            }
+            else if (frames_written == -EAGAIN)  // Try again
+            {
+                continue;
+            }
+            else
+            {
+                fprintf(stderr, "ALSA write error: %s\n", snd_strerror(frames_written));
+                break;
+            }
+        }
+        else  // Successful write
+        {
+            total_frames -= frames_written;
+            ptr += frames_written * 2;  // Move buffer pointer forward
+        }
+    }
 }
+
 
 void Audio_Close()
 {

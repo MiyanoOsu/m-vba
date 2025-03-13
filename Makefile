@@ -9,14 +9,14 @@ OBJS = gba.o memory.o sound.o system.o sound_output.o core.o input.o \
 
 VPATH = ./src
 
-CFLAGS = -Iinclude -Ofast -flto -fno-common -Wall -std=gnu++11 \
+CFLAGS = -Iinclude -O2 -fno-common -Wall -std=gnu++11 \
 	-DLSB_FIRST -DWANT_16BPP -DFRONTEND_SUPPORTS_RGB565 \
 	-DNDEBUG -DWANT_STEREO_SOUND -DVIRTUAL_SURFACE \
 	`/usr/bin/sdl-config --cflags`
 
 ASFLAGS = 
 
-LDFLAGS = -lc -lgcc -lm -lSDL -lasound -lz -flto -Wl,--as-needed -Wl,--gc-sections 
+LDFLAGS = -lc -lgcc -lm -lSDL -lasound -lz -Wl,--as-needed -Wl,--gc-sections 
 
 all: $(TARGET)
 

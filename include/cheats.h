@@ -1,5 +1,5 @@
-#ifndef GBA_CHEATS_H
-#define GBA_CHEATS_H
+#ifndef CHEATS_H
+#define CHEATS_H
 
 struct CheatsData {
   int code;
