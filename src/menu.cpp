@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <libgen.h>
 #include <errno.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -210,10 +209,8 @@ static void Input_Remapping()
                         break;
                     case SDLK_DOWN:
                         currentselection++;
-                        if (currentselection == 10)
-                        {
+                        if (currentselection == 11)
 							currentselection = 1;
-						}
                         break;
                     case SDLK_LALT:
                     case SDLK_RETURN:
@@ -229,7 +226,7 @@ static void Input_Remapping()
 						if (currentselection > 9) currentselection -= 9;
 					break;
                     case SDLK_RIGHT:
-						if (currentselection < 10) currentselection += 9;
+						if (currentselection < 10) currentselection -= 9;
 					break;
                     case SDLK_BACKSPACE:
 						controls_chosen = 1;
@@ -277,44 +274,34 @@ static void Input_Remapping()
 		print_string("Press [B] to Exit", TextWhite, TextBlue, 85, 225, (uint16_t*) backbuffer->pixels);
 		
 		snprintf(text, sizeof(text), "UP   : %s\n", Return_Text_Button(option.config_buttons[0]));
-		if (currentselection == 1) print_string(text, TextRed, 0, 5, 25+2, (uint16_t*) backbuffer->pixels);
-		else print_string(text, TextWhite, 0, 5, 25+2, (uint16_t*) backbuffer->pixels);
+        print_string(text, (currentselection == 1) ? TextRed : TextWhite, 0, 5, 27, (uint16_t*) backbuffer->pixels);
 		
 		snprintf(text, sizeof(text), "DOWN   : %s\n", Return_Text_Button(option.config_buttons[1]));
-		if (currentselection == 2) print_string(text, TextRed, 0, 5, 45+2, (uint16_t*) backbuffer->pixels);
-		else print_string(text, TextWhite, 0, 5, 45+2, (uint16_t*) backbuffer->pixels);
+        print_string(text, (currentselection == 2) ? TextRed : TextWhite, 0, 5, 47, (uint16_t*) backbuffer->pixels);
 		
 		snprintf(text, sizeof(text), "LEFT   : %s\n", Return_Text_Button(option.config_buttons[2]));
-		if (currentselection == 3) print_string(text, TextRed, 0, 5, 65+2, (uint16_t*) backbuffer->pixels);
-		else print_string(text, TextWhite, 0, 5, 65+2, (uint16_t*) backbuffer->pixels);
+        print_string(text, (currentselection == 3) ? TextRed : TextWhite, 0, 5, 67, (uint16_t*) backbuffer->pixels);
 		
 		snprintf(text, sizeof(text), "RIGHT   : %s\n", Return_Text_Button(option.config_buttons[3]));
-		if (currentselection == 4) print_string(text, TextRed, 0, 5, 85+2, (uint16_t*) backbuffer->pixels);
-		else print_string(text, TextWhite, 0, 5, 85+2, (uint16_t*) backbuffer->pixels);
+        print_string(text, (currentselection == 4) ? TextRed : TextWhite, 0, 5, 87, (uint16_t*) backbuffer->pixels);
 		
 		snprintf(text, sizeof(text), "A   : %s\n", Return_Text_Button(option.config_buttons[4]));
-		if (currentselection == 5) print_string(text, TextRed, 0, 5, 105+2, (uint16_t*) backbuffer->pixels);
-		else print_string(text, TextWhite, 0, 5, 105+2, (uint16_t*) backbuffer->pixels);
+        print_string(text, (currentselection == 5) ? TextRed : TextWhite, 0, 5, 107, (uint16_t*) backbuffer->pixels);
 		
 		snprintf(text, sizeof(text), "B   : %s\n", Return_Text_Button(option.config_buttons[5]));
-		if (currentselection == 6) print_string(text, TextRed, 0, 5, 125+2, (uint16_t*) backbuffer->pixels);
-		else print_string(text, TextWhite, 0, 5, 125+2, (uint16_t*) backbuffer->pixels);
+        print_string(text, (currentselection == 6) ? TextRed : TextWhite, 0, 5, 127, (uint16_t*) backbuffer->pixels);
 		
 		snprintf(text, sizeof(text), "L   : %s\n", Return_Text_Button(option.config_buttons[6]));
-		if (currentselection == 7) print_string(text, TextRed, 0, 5, 145+2, (uint16_t*) backbuffer->pixels);
-		else print_string(text, TextWhite, 0, 5, 145+2, (uint16_t*) backbuffer->pixels);
+        print_string(text, (currentselection == 7) ? TextRed : TextWhite, 0, 5, 147, (uint16_t*) backbuffer->pixels);
 		
 		snprintf(text, sizeof(text), "R   : %s\n", Return_Text_Button(option.config_buttons[7]));
-		if (currentselection == 8) print_string(text, TextRed, 0, 5, 165+2, (uint16_t*) backbuffer->pixels);
-		else print_string(text, TextWhite, 0, 5, 165+2, (uint16_t*) backbuffer->pixels);
+        print_string(text, (currentselection == 8) ? TextRed : TextWhite, 0, 5, 167, (uint16_t*) backbuffer->pixels);
 			
 		snprintf(text, sizeof(text), "START : %s\n", Return_Text_Button(option.config_buttons[8]));
-		if (currentselection == 9) print_string(text, TextRed, 0, 5, 185+2, (uint16_t*) backbuffer->pixels);
-		else print_string(text, TextWhite, 0, 5, 185+2, (uint16_t*) backbuffer->pixels);
+        print_string(text, (currentselection == 9) ? TextRed : TextWhite, 0, 5, 187, (uint16_t*) backbuffer->pixels);
 			
 		snprintf(text, sizeof(text), "SELECT: %s\n", Return_Text_Button(option.config_buttons[9]));
-		if (currentselection == 10) print_string(text, TextRed, 0, 165, 25+2, (uint16_t*) backbuffer->pixels);
-		else print_string(text, TextWhite, 0, 165, 25+2, (uint16_t*) backbuffer->pixels);
+        print_string(text, (currentselection == 10) ? TextRed : TextWhite, 0, 165, 27, (uint16_t*) backbuffer->pixels);
 	
 		Update_Video_Menu();
 	}
@@ -350,11 +337,9 @@ void Menu()
 
 		
 		snprintf(text, sizeof(text), "Load State %d", save_slot);
-		
 		print_string(text, (currentselection == 2) ? TextRed : TextWhite, 0, 5, 65, (uint16_t*) backbuffer->pixels);
 
 		snprintf(text, sizeof(text), "Save State %d", save_slot);
-		
 		print_string(text, (currentselection == 3) ? TextRed : TextWhite, 0, 5, 85, (uint16_t*) backbuffer->pixels);
 
         print_string("Reset", (currentselection == 4) ? TextRed : TextWhite, 0, 5, 105, (uint16_t*) backbuffer->pixels);

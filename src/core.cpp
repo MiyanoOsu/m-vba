@@ -1,10 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#include <string.h>
 #include <ctype.h>
-#include <string.h>
-#include <libgen.h>
 #include <sys/time.h>
 
 #include <system.h>
@@ -237,7 +234,7 @@ static void gba_init(void)
 {
    if (useBios) {
         snprintf(filename_bios, sizeof(filename_bios), "%s/.m-vba/gba_bios.bin", getenv("HOME"));
-        //printf("Loading bios: %s\n", filename_bios);
+        printf("Loading bios: %s\n", filename_bios);
    }
    CPUInit(filename_bios, useBios);
    cpuSaveType = 0;
@@ -267,16 +264,6 @@ static void gba_init(void)
    free(state_buf);
    state_buf = NULL;
    memset(save_buf, 0xff, sizeof(save_buf));
-}
-
-void gba_deinit(void)
-{
-	CPUCleanUp();
-}
-
-void gba_reset(void)
-{
-   CPUReset();
 }
 
 static unsigned has_frame;
@@ -437,7 +424,7 @@ void SaveState(char* tmp, uint_fast8_t load)
 
 int main(int argc, char* argv[])
 {	
-    //printf("Starting project Alpha\n");
+    printf("Starting\n");
     
     if (argc < 2)
 	{
@@ -453,12 +440,7 @@ int main(int argc, char* argv[])
 	
 	Init_Video();
 	CPULoadRom(argv[1]);
-	/* We need a more reliable way than that... */
-	/*if (ret < 1)
-	{
-		printf("Could not load ROM in memory\n");
-		return 0;
-	}*/
+
 	gba_init();
 	
 	/* This needs to be loaded after everything is created. Used to be it in Init_Configuration 
@@ -468,9 +450,7 @@ int main(int argc, char* argv[])
 	
 	while(!done)
 	{
-		if (emulator_state == 0 ) {gba_run();}
-		if (emulator_state == 1 ) {Menu();}
-		/*switch(emulator_state)
+		switch(emulator_state)
 		{
 			case 0:
 				gba_run();
@@ -478,10 +458,10 @@ int main(int argc, char* argv[])
 			case 1:
 				Menu();
 			break;
-		}*/
+		}
 	}
 	
-	gba_deinit();
+	CPUCleanUp();
 	Audio_Close();
 	Close_Video();
 }
