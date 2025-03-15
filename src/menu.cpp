@@ -322,7 +322,7 @@ static void Input_Remapping()
 	config_save();
 }
 
-#define EXIT_NUMBER 6-IPU_OFFSET
+#define EXIT_NUMBER 7-IPU_OFFSET
 
 void Menu()
 {
@@ -347,6 +347,7 @@ void Menu()
 		print_string("m-vba - Built on " __DATE__, TextWhite, 0, 5, 15, (uint16_t*) backbuffer->pixels);
 		
 		print_string("Continue", (currentselection == 1) ? TextRed : TextWhite, 0, 5, 45, (uint16_t*) backbuffer->pixels);
+
 		
 		snprintf(text, sizeof(text), "Load State %d", save_slot);
 		
@@ -356,22 +357,24 @@ void Menu()
 		
 		print_string(text, (currentselection == 3) ? TextRed : TextWhite, 0, 5, 85, (uint16_t*) backbuffer->pixels);
 
+        print_string("Reset", (currentselection == 4) ? TextRed : TextWhite, 0, 5, 105, (uint16_t*) backbuffer->pixels);
+
         switch(option.fullscreen)
 		{
 			case 0:
-				print_string("Scaling : Stretched", (currentselection == 4) ? TextRed : TextWhite, 0, 5, 105, (uint16_t*) backbuffer->pixels);
+				print_string("Scaling : Stretched", (currentselection == 5) ? TextRed : TextWhite, 0, 5, 125, (uint16_t*) backbuffer->pixels);
 			break;
 			case 1:
-				print_string("Scaling : Keep scaled", (currentselection == 4) ? TextRed : TextWhite, 0, 5, 105, (uint16_t*) backbuffer->pixels);
+				print_string("Scaling : Keep scaled", (currentselection == 5) ? TextRed : TextWhite, 0, 5, 125, (uint16_t*) backbuffer->pixels);
 			break;
 			case 2:
-				print_string("Scaling : Native", (currentselection == 4) ? TextRed : TextWhite, 0, 5, 105, (uint16_t*) backbuffer->pixels);
+				print_string("Scaling : Native", (currentselection == 5) ? TextRed : TextWhite, 0, 5, 125, (uint16_t*) backbuffer->pixels);
 			break;
 		}
 
-		print_string("Input remapping", (currentselection == 5-IPU_OFFSET) ? TextRed : TextWhite, 0, 5, 125-IPU_OFFSET_Y, (uint16_t*) backbuffer->pixels);
+		print_string("Input remapping", (currentselection == 6-IPU_OFFSET) ? TextRed : TextWhite, 0, 5, 145-IPU_OFFSET_Y, (uint16_t*) backbuffer->pixels);
 	
-		print_string("Quit", (currentselection == EXIT_NUMBER) ? TextRed : TextWhite, 0, 5, 145-IPU_OFFSET_Y, (uint16_t*) backbuffer->pixels);
+		print_string("Quit", (currentselection == EXIT_NUMBER) ? TextRed : TextWhite, 0, 5, 165-IPU_OFFSET_Y, (uint16_t*) backbuffer->pixels);
 		
         while (SDL_PollEvent(&Event))
         {
@@ -409,7 +412,7 @@ void Menu()
                             case 3:
                                 if (save_slot > 0) save_slot--;
 							break;
-                            case 4:
+                            case 5:
 							option.fullscreen--;
 							if (option.fullscreen < 0)
 								option.fullscreen = upscalers_available;
@@ -425,7 +428,7 @@ void Menu()
 								if (save_slot == 10)
 									save_slot = 9;
 							break;
-                            case 4:
+                            case 5:
                                 option.fullscreen++;
                                 if (option.fullscreen > upscalers_available)
                                     option.fullscreen = 0;
@@ -447,13 +450,17 @@ void Menu()
         {
             switch(currentselection)
             {
-				case 5-IPU_OFFSET:
+				case 6-IPU_OFFSET:
 					Input_Remapping();
 				break;
-                case 4-IPU_OFFSET:
+                case 5-IPU_OFFSET:
                     option.fullscreen++;
                     if (option.fullscreen > upscalers_available)
                         option.fullscreen = 0;
+                    break;
+                case 4 :
+                    CPUReset();
+                    currentselection = 1;
                     break;
                 case 2 :
                     SaveState_Menu(1, save_slot);
@@ -462,8 +469,6 @@ void Menu()
                 case 3 :
 					SaveState_Menu(0, save_slot);
 					currentselection = 1;
-				break;
-				default:
 				break;
             }
         }
