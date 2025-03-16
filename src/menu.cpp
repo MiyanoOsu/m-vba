@@ -226,7 +226,7 @@ static void Input_Remapping()
 						if (currentselection > 9) currentselection -= 9;
 					break;
                     case SDLK_RIGHT:
-						if (currentselection < 10) currentselection -= 9;
+						if (currentselection < 10) currentselection = 10;
 					break;
                     case SDLK_BACKSPACE:
 						controls_chosen = 1;

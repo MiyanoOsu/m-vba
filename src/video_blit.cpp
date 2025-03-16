@@ -64,13 +64,8 @@ void Set_Video_Menu()
 
 void Set_Video_InGame()
 {
-	switch(option.fullscreen) 
-	{
-        default:
-			if (sdl_screen->w != HOST_WIDTH_RESOLUTION) sdl_screen = SDL_SetVideoMode(HOST_WIDTH_RESOLUTION, HOST_HEIGHT_RESOLUTION, 16, SDL_SWSURFACE);
-			width_of_surface = INTERNAL_GBA_WIDTH;
-        break;
-    }
+	if (sdl_screen->w != HOST_WIDTH_RESOLUTION) sdl_screen = SDL_SetVideoMode(HOST_WIDTH_RESOLUTION, HOST_HEIGHT_RESOLUTION, 16, SDL_SWSURFACE);
+	width_of_surface = INTERNAL_GBA_WIDTH;
 }
 
 void Clean_Video()
@@ -80,7 +75,7 @@ void Clean_Video()
 	SDL_FillRect(sdl_screen, NULL, 0);
 	SDL_Flip(sdl_screen);
 	SDL_FillRect(sdl_screen, NULL, 0);
-	SDL_Flip(sdl_screen);	
+	SDL_Flip(sdl_screen);
 }
 
 void Close_Video()
@@ -99,9 +94,9 @@ void Update_Video_Menu()
 	SDL_Flip(sdl_screen);
 }
 
-#include <math.h>
 void Update_Video_Ingame(void)
 {
+	uint16_t tsframe = SDL_GetTicks();
 	uint_fast16_t y, pitch;
 	uint32_t internal_width, internal_height;
 	uint16_t *source_graph, *src, *dst;
@@ -134,11 +129,9 @@ void Update_Video_Ingame(void)
 				dst += pitch;
 			}
 		break;
-		// Hqx
-		case 3:
-		break;
 	}
 	SDL_UnlockSurface(sdl_screen);	
 	SDL_Flip(sdl_screen);
-	SDL_Delay(floor(9));
+	float time_delay = (SDL_GetTicks() - tsframe) * 1000.0f / 60;
+	SDL_Delay(time_delay);
 }
