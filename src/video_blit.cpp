@@ -9,6 +9,7 @@
 #include "scaler.h"
 #include "config.h"
 #include "globals.h"
+#include "font_drawing.h"
 
 #ifdef ENABLE_JOYSTICKCODE
 static SDL_Joystick *sdl_joy;
@@ -94,9 +95,53 @@ void Update_Video_Menu()
 	SDL_Flip(sdl_screen);
 }
 
+uint16_t fps = 0;
+
+void fpsCounter(void)
+{
+	static unsigned int frames;
+	static uint16_t curTicks;
+	static uint16_t lastTicks;
+	uint16_t t;
+
+	curTicks = SDL_GetTicks();
+	t = curTicks - lastTicks;
+
+	if (t >= 1000)
+	{
+		lastTicks = curTicks;
+		fps = frames;
+		frames = 0;		
+	}
+	++frames;
+}
+
+void fpsLimiter(void)
+{
+	static uint16_t curTicks;
+	static uint16_t lastTicks;
+	float t;
+
+	curTicks = SDL_GetTicks();
+	t = curTicks - lastTicks;
+
+	if (t >= 1000.0f/60)
+	{
+		lastTicks = curTicks;
+		return;
+	}
+	SDL_Delay(1);
+}
+
+void fpsDrawer(void)
+{
+	char str_fps[3];
+	sprintf(str_fps,"%d",fps);
+	print_string(str_fps, TextWhite, 0, 1, 1, (uint16_t*) sdl_screen->pixels);
+}
+
 void Update_Video_Ingame(void)
 {
-	uint16_t tsframe = SDL_GetTicks();
 	uint_fast16_t y, pitch;
 	uint32_t internal_width, internal_height;
 	uint16_t *source_graph, *src, *dst;
@@ -130,8 +175,10 @@ void Update_Video_Ingame(void)
 			}
 		break;
 	}
-	SDL_UnlockSurface(sdl_screen);	
+
+	fpsDrawer();
+	SDL_UnlockSurface(sdl_screen);
 	SDL_Flip(sdl_screen);
-	float time_delay = (SDL_GetTicks() - tsframe) * 1000.0f / 60;
-	SDL_Delay(time_delay);
+	fpsCounter();
+	fpsLimiter();
 }
