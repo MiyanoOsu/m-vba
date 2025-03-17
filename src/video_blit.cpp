@@ -137,6 +137,11 @@ void fpsDrawer(void)
 {
 	char str_fps[3];
 	sprintf(str_fps,"%d",fps);
+	if(option.fullscreen !=0)
+	{	SDL_Rect rect = {0,0,23,11};
+		SDL_FillRect(sdl_screen, &rect, SDL_MapRGB(sdl_screen->format, 0, 0, 0));
+		SDL_UpdateRect(sdl_screen, rect.x, rect.y, rect.w, rect.h);
+	}
 	print_string(str_fps, TextWhite, 0, 1, 1, (uint16_t*) sdl_screen->pixels);
 }
 
