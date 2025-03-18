@@ -13,5 +13,5 @@ docker pull miyoocfw/toolchain-shared-uclibc:latest
 # to compile
 docker run --volume ./:/src/ -it miyoocfw/toolchain-shared-uclibc:latest
 cd src
-make -j $(nproc)
+make -f Makefile.miyoo -j $(nproc)
 ~~~
