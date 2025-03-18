@@ -135,7 +135,7 @@ void fpsLimiter(void)
 
 void fpsDrawer(void)
 {
-	char str_fps[3];
+	char str_fps[6];
 	sprintf(str_fps,"%d",fps);
 	if(option.fullscreen !=0)
 	{	SDL_Rect rect = {0,0,23,11};

@@ -496,7 +496,7 @@ static graphics_t graphics;
 static memoryMap map[256];
 static int clockTicks;
 
-static size_t romSize = 0x2000000;
+static int romSize = 0x2000000;
 static uint32_t line[6][240];
 static bool gfxInWin[2][240];
 static int lineOBJpixleft[128];
@@ -2982,7 +2982,7 @@ DEFINE_ALU_INSN_C (1F, 3F, MVNS, YES)
     OP;                                                 \
     SETCOND;                                            \
     if ((s32)rs < 0)                                    \
-        rs = ~rs;                                       \
+        {rs = ~rs;}                                       \
 	clockTicks = CYCLES;                                \
     if ((rs & 0xFFFFFF00) == 0)                         \
         clockTicks += 0;                                \
@@ -8859,8 +8859,15 @@ static bool CPUIsGBABios(const char * file)
 	return false;
 }
 
+#include <sys/mman.h>
+
 void CPUCleanUp (void)
 {
+	if(rom != NULL) {
+		munmap(rom,romSize);
+		rom = NULL;
+	}
+	
 	if(vram != NULL) {
 		memalign_free(vram);
 		vram = NULL;
@@ -8991,12 +8998,17 @@ static void applyCartridgeOverride(char* code) {
 void CPULoadRom(char * file)
 {
 	if (!CPUSetupBuffers()) return;
+
 	uint8_t *pt = loadRomPt(file, utilIsGBAImage);
 	rom = pt;
+	romSize = loadRomSize(file);
+
 	uint8_t *whereToLoad = rom;
 	memcpy(cartridgeCode, whereToLoad + 0xAC, 4);
 	applyCartridgeOverride(cartridgeCode);
+
 	uint16_t *temp = (uint16_t *)(rom+((romSize+1)&~1));
+	
 	for(int i = (romSize+1)&~1; i < romSize; i+=2) {
 		WRITE16LE(temp, (i >> 1) & 0xFFFF);
 		temp++;
@@ -13959,8 +13971,8 @@ int cheatsCheckKeys(u32 keys, u32 extended)
         if (cheatsList[i].address<=0x3FF)
         {
           if (((cheatsList[i].address & 0x3FC) != 0x6) && ((cheatsList[i].address & 0x3FC) != 0x130))
-            ioMem[cheatsList[i].address & 0x3FC]= (cheatsList[i].value & 0xFFFF);
-          if ((((cheatsList[i].address & 0x3FC)+2) != 0x6) && ((cheatsList[i].address & 0x3FC) +2) != 0x130)
+        	ioMem[cheatsList[i].address & 0x3FC]= (cheatsList[i].value & 0xFFFF);
+          if ((((cheatsList[i].address & 0x3FC) +2) != 0x6) && ((cheatsList[i].address & 0x3FC) +2) != 0x130)
             ioMem[(cheatsList[i].address & 0x3FC) + 2 ]= ((cheatsList[i].value>>16 ) & 0xFFFF);
         }
         break;

@@ -61,17 +61,27 @@ static int utilGetSize(int size)
 uint8_t *loadRomPt(const char *file, bool (*accept)(const char *))
 {
     int fd = open(file, O_RDONLY);
-    if (fd < 0)
-        return NULL;
+    if (fd < 0) return NULL;
 
 	size_t romSize = lseek(fd, 0, SEEK_END);
-    
+
     uint8_t *mapped = (uint8_t *)mmap(NULL, romSize, PROT_READ, MAP_PRIVATE, fd, 0);
     if (mapped == MAP_FAILED)
-        return NULL;
-
+	{ 
+		return NULL;
+		close(fd);
+	}
 	close(fd);
     return mapped;
+}
+
+int loadRomSize(const char *file)
+{
+	int fd = open(file, O_RDONLY);
+    if (fd < 0) return 0;
+	size_t romSize = lseek(fd, 0, SEEK_END);
+	close(fd);
+	return romSize;
 }
 
 uint8_t *utilLoad(const char *file, bool (*accept)(const char *), uint8_t *data, int &size)

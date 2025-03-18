@@ -18,7 +18,7 @@
 t_config option;
 uint32_t emulator_state = 0;
 
-static char home_path[64], save_path[64], eeprom_path[64], conf_path[64];
+static char home_path[256], save_path[264], eeprom_path[263], conf_path[261];
 static uint32_t controls_chosen = 0;
 
 extern SDL_Surface *sdl_screen;
@@ -35,7 +35,7 @@ static const int8_t upscalers_available = 2;
 
 static void SaveState_Menu(uint_fast8_t load_mode, uint_fast8_t slot)
 {
-	char tmp[128];
+	char tmp[528];
 	snprintf(tmp, sizeof(tmp), "%s/%s_%d.sts", save_path, GameName_emu, slot);
 	SaveState(tmp,load_mode);
 }
@@ -43,7 +43,7 @@ static void SaveState_Menu(uint_fast8_t load_mode, uint_fast8_t slot)
 void EEPROM_Menu(uint_fast8_t load_mode)
 {
 	extern void adjust_save_ram();
-	char tmp[128];
+	char tmp[523];
 	snprintf(tmp, sizeof(tmp), "%s/%s.eps", eeprom_path, GameName_emu);
 	adjust_save_ram();
 	EEPROM_file(tmp,load_mode);
@@ -51,7 +51,7 @@ void EEPROM_Menu(uint_fast8_t load_mode)
 
 static void config_load()
 {
-	char config_path[128];
+	char config_path[528];
 	FILE* fp;
 	snprintf(config_path, sizeof(config_path), "%s/%s.cfg", conf_path, GameName_emu);
 
@@ -88,7 +88,7 @@ static void config_load()
 static void config_save()
 {
 	FILE* fp;
-	char config_path[128];
+	char config_path[521];
 	snprintf(config_path, sizeof(config_path), "%s/%s.cfg", conf_path, GameName_emu);
 	
 	fp = fopen(config_path, "wb");
