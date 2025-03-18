@@ -62,6 +62,7 @@ extern u16 gyroRead(u32 address);
 extern bool gyroWrite(u32 address, u16 value);
 
 bool utilIsGBAImage(const char *);
+uint8_t *loadRomPt(const char *file, bool (*)(const char*));
 uint8_t *utilLoad(const char *, bool (*)(const char*), uint8_t *, int &);
 
 void utilWriteIntMem(uint8_t *& data, int);

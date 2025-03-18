@@ -496,7 +496,7 @@ static graphics_t graphics;
 static memoryMap map[256];
 static int clockTicks;
 
-static int romSize = 0x2000000;
+static size_t romSize = 0x2000000;
 static uint32_t line[6][240];
 static bool gfxInWin[2][240];
 static int lineOBJpixleft[128];
@@ -713,10 +713,10 @@ static inline u32 CPUReadMemory(u32 address)
 		case 0x08:
 		case 0x09:
 		case 0x0A:
-		case 0x0B: 
-		case 0x0C: 
+		case 0x0B:
+		case 0x0C:
 			/* gamepak ROM */
-			value = READ32LE(rom + (address&0x1FFFFFC));
+			value = READ32LE(rom + (address&(romSize-4)));
 			break;
 		case 0x0D:
          value = eepromRead();
@@ -824,7 +824,7 @@ static inline u32 CPUReadHalfWord(u32 address)
 					return rtcRead(address);
 				break;
 			default:
-				value = READ16LE(rom + (address & 0x1FFFFFE)); break;
+				value = READ16LE(rom + (address & (romSize-2))); break;
 			}
 			break;
 		case 13:
@@ -8861,11 +8861,6 @@ static bool CPUIsGBABios(const char * file)
 
 void CPUCleanUp (void)
 {
-	if(rom != NULL) {
-		memalign_free(rom);
-		rom = NULL;
-	}
-
 	if(vram != NULL) {
 		memalign_free(vram);
 		vram = NULL;
@@ -8912,13 +8907,11 @@ void CPUCleanUp (void)
 
 bool CPUSetupBuffers()
 {
-	romSize = 0x2000000;
 	if(rom != NULL)
 		CPUCleanUp();
 
 	//systemSaveUpdateCounter = SYSTEM_SAVE_NOT_UPDATED;
 
-	rom = (uint8_t *)memalign_alloc(0x2000000);
 	workRAM = (uint8_t *)memalign_alloc(0x40000);
 	bios = (uint8_t *)memalign_alloc(0x4000);
 	internalRAM = (uint8_t *)memalign_alloc(0x8000);
@@ -8930,7 +8923,6 @@ bool CPUSetupBuffers()
 	#endif
 	ioMem = (uint8_t *)memalign_alloc(0x400);
 
-	memset(rom, 0, 0x2000000);
 	memset(workRAM, 1, 0x40000);
 	memset(bios, 1, 0x4000);
 	memset(internalRAM, 1, 0x8000);
@@ -8942,7 +8934,7 @@ bool CPUSetupBuffers()
 	#endif
 	memset(ioMem, 1, 0x400);
 
-	if(rom == NULL || workRAM == NULL || bios == NULL ||
+	if( workRAM == NULL || bios == NULL ||
 	   internalRAM == NULL || paletteRAM == NULL ||
 	   vram == NULL || oam == NULL || pix == NULL || ioMem == NULL) {
 		CPUCleanUp();
@@ -8996,63 +8988,20 @@ static void applyCartridgeOverride(char* code) {
 #endif
 }
 
-int CPULoadRom(char * file)
+void CPULoadRom(char * file)
 {
-	if (!CPUSetupBuffers()) return 0;
-	
-	uint8_t *whereToLoad = cpuIsMultiBoot ? workRAM : rom;
-
-	if(file != NULL)
-	{
-		if(!utilLoad(file,
-					utilIsGBAImage,
-					whereToLoad,
-					romSize)) {
-			memalign_free(rom);
-			rom = NULL;
-			memalign_free(workRAM);
-			workRAM = NULL;
-			return 0;
-		}
-	}
-
-	//load cartridge code
+	if (!CPUSetupBuffers()) return;
+	uint8_t *pt = loadRomPt(file, utilIsGBAImage);
+	rom = pt;
+	uint8_t *whereToLoad = rom;
 	memcpy(cartridgeCode, whereToLoad + 0xAC, 4);
 	applyCartridgeOverride(cartridgeCode);
-
 	uint16_t *temp = (uint16_t *)(rom+((romSize+1)&~1));
-	int i;
-
-	for(i = (romSize+1)&~1; i < 0x2000000; i+=2) {
+	for(int i = (romSize+1)&~1; i < romSize; i+=2) {
 		WRITE16LE(temp, (i >> 1) & 0xFFFF);
 		temp++;
 	}
-
-	return romSize;
-}
-
-int CPULoadRomData(const char *data, int size)
-{
-	if (!CPUSetupBuffers()) return 0;
-
-	uint8_t *whereToLoad = cpuIsMultiBoot ? workRAM : rom;
-
-	romSize = size % 2 == 0 ? size : size + 1;
-	memcpy(whereToLoad, data, size);
-
-	//load cartridge code
-	memcpy(cartridgeCode, whereToLoad + 0xAC, 4);
-	applyCartridgeOverride(cartridgeCode);
-
-	uint16_t *temp = (u16 *)(rom+((romSize+1)&~1));
-	int i;
-
-	for(i = (romSize+1)&~1; i < 0x2000000; i+=2) {
-		WRITE16LE(temp, (i >> 1) & 0xFFFF);
-		temp++;
-	}
-
-	return romSize;
+	return;
 }
 
 void doMirroring (bool b)
@@ -12091,9 +12040,9 @@ void CPUInit(const char *biosFileName, bool useBiosFile)
 	for(i = 0x304; i < 0x400; i++)
 		ioReadable[i] = false;
 
-	if(romSize < 0x1fe2000) {
-		*((uint16_t *)&rom[0x1fe209c]) = 0xdffa; // SWI 0xFA
-		*((uint16_t *)&rom[0x1fe209e]) = 0x4770; // BX LR
+	if(romSize < (romSize-0x1e000)) {
+		*((uint16_t *)&rom[romSize-0x1df64]) = 0xdffa; // SWI 0xFA
+		*((uint16_t *)&rom[romSize-0x1df62]) = 0x4770; // BX LR
 	}
 
 	graphics.layerEnable = 0xff00;
@@ -12349,13 +12298,13 @@ void CPUReset (void)
 	map[7].address = oam;
 	map[7].mask = 0x3FF;
 	map[8].address = rom;
-	map[8].mask = 0x1FFFFFF;
+	map[8].mask = romSize-1;
 	map[9].address = rom;
-	map[9].mask = 0x1FFFFFF;
+	map[9].mask = romSize-1;
 	map[10].address = rom;
-	map[10].mask = 0x1FFFFFF;
+	map[10].mask = romSize-1;
 	map[12].address = rom;
-	map[12].mask = 0x1FFFFFF;
+	map[12].mask = romSize-1;
 	map[14].address = flashSaveMemory;
 	map[14].mask = 0xFFFF;
 
@@ -13201,10 +13150,10 @@ u8 v3_deadtable2[256] = {
 #define CHEAT_IS_HEX(a) ( ((a)>='A' && (a) <='F') || ((a) >='0' && (a) <= '9'))
 
 #define CHEAT_PATCH_ROM_16BIT(a,v) \
-  WRITE16LE(((u16 *)&rom[(a) & 0x1ffffff]), v);
+  WRITE16LE(((u16 *)&rom[(a) & (romSize-1)]), v);
 
 #define CHEAT_PATCH_ROM_32BIT(a,v) \
-  WRITE32LE(((u32 *)&rom[(a) & 0x1ffffff]), v);
+  WRITE32LE(((u32 *)&rom[(a) & (romSize-1)]), v);
 
 static bool isMultilineWithData(int i)
 {
