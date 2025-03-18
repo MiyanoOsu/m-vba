@@ -50,12 +50,12 @@ bool utilIsGBAImage(const char * file)
 
 static int utilGetSize(int size)
 {
-	int res = 1;
+    int res = 1;
 
-	while(res < size)
-		res <<= 1;
+    while(res < size)
+        res <<= 1;
 
-	return res;
+    return res;
 }
 
 uint8_t *loadRomPt(const char *file, bool (*accept)(const char *))
@@ -63,53 +63,53 @@ uint8_t *loadRomPt(const char *file, bool (*accept)(const char *))
     int fd = open(file, O_RDONLY);
     if (fd < 0) return NULL;
 
-	size_t romSize = lseek(fd, 0, SEEK_END);
+    size_t romSize = lseek(fd, 0, SEEK_END);
 
     uint8_t *mapped = (uint8_t *)mmap(NULL, romSize, PROT_READ, MAP_PRIVATE, fd, 0);
     if (mapped == MAP_FAILED)
-	{ 
-		return NULL;
-		close(fd);
-	}
-	close(fd);
+    { 
+        return NULL;
+        close(fd);
+    }
+    close(fd);
     return mapped;
 }
 
 int loadRomSize(const char *file)
 {
-	int fd = open(file, O_RDONLY);
+    int fd = open(file, O_RDONLY);
     if (fd < 0) return 0;
-	size_t romSize = lseek(fd, 0, SEEK_END);
-	close(fd);
-	return romSize;
+    size_t romSize = lseek(fd, 0, SEEK_END);
+    close(fd);
+    return romSize;
 }
 
 uint8_t *utilLoad(const char *file, bool (*accept)(const char *), uint8_t *data, int &size)
 {
     uint8_t *image = NULL;
-	FILE *fp       = fopen(file,"rb");
+    FILE *fp = fopen(file,"rb");
     if (!fp) return NULL;
 
-	fseek(fp, 0, SEEK_END); /* Go to end */
-	size = ftell(fp); /* Get position at end (length) */
-	fseek(fp, 0, SEEK_SET);
+    fseek(fp, 0, SEEK_END); /* Go to end */
+    size = ftell(fp); /* Get position at end (length) */
+    fseek(fp, 0, SEEK_SET);
 	
-	image = data;
+    image = data;
 	
-	if(image == NULL)
-	{
-		/* Allocate buffer memory if none was passed to the function*/
-		image = (uint8_t *)malloc(utilGetSize(size));
-		if(image == NULL)
-		{
-			systemMessage("Failed to allocate memory for data");
-			return NULL;
-		}
-	}
+    if(image == NULL)
+    {
+        /* Allocate buffer memory if none was passed to the function*/
+        image = (uint8_t *)malloc(utilGetSize(size));
+        if(image == NULL)
+        {
+            systemMessage("Failed to allocate memory for data");
+            return NULL;
+        }
+    }
 
-	fread(image, 1, size, fp); /* read into buffer */
-	fclose(fp);
-	return image;
+    fread(image, 1, size, fp); /* read into buffer */
+    fclose(fp);
+    return image;
 }
 
 /* Not endian safe, but VBA itself doesn't seem to care */
