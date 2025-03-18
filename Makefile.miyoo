@@ -5,19 +5,18 @@ CROSS_COMPILE = arm-linux-
 CC = $(CROSS_COMPILE)gcc
 
 OBJS = gba.o memory.o sound.o system.o sound_output.o core.o input.o \
-	font_drawing.o menu.o scaler.o video_blit.o neon_memcpy.o
+	font_drawing.o menu.o scaler.o video_blit.o
 
 VPATH = ./src
 
-CFLAGS = -Iinclude -march=armv5te -mtune=arm926ej-s -O2 -flto -fno-common -Wall -std=gnu++11 \
+CFLAGS = -Iinclude -march=armv5te -mtune=arm926ej-s -O2  -fno-common -Wall -std=gnu++11 \
 	-DLSB_FIRST -DWANT_16BPP -DFRONTEND_SUPPORTS_RGB565 -DNDEBUG -DWANT_STEREO_SOUND  \
-	-DVIRTUAL_SURFACE -DUSE_TWEAKS \
-	`/opt/miyoo/arm-miyoo-linux-uclibcgnueabi/sysroot/usr/bin/sdl-config --cflags`
+	-DVIRTUAL_SURFACE `sdl-config --cflags`
 
-ASFLAGS = -march=armv5te -mtune=arm926ej-s -marm
+ASFLAGS = -march=armv5te -mtune=arm926ej-s
 
-LDFLAGS = -march=armv5te -mtune=arm926ej-s -marm  \
-	  -lc -lgcc -lm -lSDL -lasound -lz -flto -Wl,--as-needed -Wl,--gc-sections  
+LDFLAGS = -march=armv5te -mtune=arm926ej-s  \
+	  -lc -lgcc -lm -lSDL -lasound -lz -Wl,--as-needed -Wl,--gc-sections  
 
 #PGO = YES
 PGO = APPLY
