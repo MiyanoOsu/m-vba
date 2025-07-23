@@ -116,7 +116,7 @@ void count_fps(void)
 	++frames;
 }
 
-void lock_fps(void)
+void lock_fps(uint8_t fps)
 {
 	static uint16_t curTicks;
 	static uint16_t lastTicks;
@@ -125,7 +125,7 @@ void lock_fps(void)
 	curTicks = SDL_GetTicks();
 	t = curTicks - lastTicks;
 
-	if (t >= 1000.0f/60)
+	if (t >= 1000.0f/fps)
 	{
 		lastTicks = curTicks;
 		return;
@@ -180,10 +180,13 @@ void Update_Video_Ingame(void)
 			}
 		break;
 	}
-    if(option.showfps == 1)
+    
+    if(option.showfps == 1) {
 	    draw_fps();
+        count_fps();
+    }
+
 	SDL_UnlockSurface(sdl_screen);
 	SDL_Flip(sdl_screen);
-	count_fps();
-	lock_fps();
+	lock_fps(60);
 }
