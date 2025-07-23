@@ -19,7 +19,7 @@
 #include "neon.h"
 #endif
 
-#define DEBUG_RENDERER_MODE0 1
+#define DEBUG_RENDERER_MODE0 0
 #define DEBUG_RENDERER_MODE1 1
 #define DEBUG_RENDERER_MODE2 1
 #define DEBUG_RENDERER_MODE3 1

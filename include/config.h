@@ -13,6 +13,7 @@ typedef struct {
 	/* For input remapping */
 	uint32_t config_buttons[19];
 	int32_t frameskip;
+    int32_t showfps;
 } t_config;
 extern t_config option;
 

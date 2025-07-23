@@ -82,6 +82,7 @@ static void config_load()
 
 		/* Set default to keep aspect */
 		option.fullscreen = 2;
+        option.showfps = 0;
 	}
 }
 
@@ -309,7 +310,7 @@ static void Input_Remapping()
 	config_save();
 }
 
-#define EXIT_NUMBER 7-IPU_OFFSET
+#define EXIT_NUMBER 8-IPU_OFFSET
 
 void Menu()
 {
@@ -356,10 +357,20 @@ void Menu()
 				print_string("Scaling : Native", (currentselection == 5) ? TextRed : TextWhite, 0, 5, 125, (uint16_t*) backbuffer->pixels);
 			break;
 		}
+        
+        switch(option.showfps)
+        {
+            case 0:
+				print_string("Show FPS : Off", (currentselection == 6) ? TextRed : TextWhite, 0, 5, 145, (uint16_t*) backbuffer->pixels);
+			break;
+			case 1:
+				print_string("Show FPS : On", (currentselection == 6) ? TextRed : TextWhite, 0, 5, 145, (uint16_t*) backbuffer->pixels);
+			break;
+        }
 
-		print_string("Input remapping", (currentselection == 6-IPU_OFFSET) ? TextRed : TextWhite, 0, 5, 145-IPU_OFFSET_Y, (uint16_t*) backbuffer->pixels);
+		print_string("Input remapping", (currentselection == 7-IPU_OFFSET) ? TextRed : TextWhite, 0, 5, 165-IPU_OFFSET_Y, (uint16_t*) backbuffer->pixels);
 	
-		print_string("Quit", (currentselection == EXIT_NUMBER) ? TextRed : TextWhite, 0, 5, 165-IPU_OFFSET_Y, (uint16_t*) backbuffer->pixels);
+		print_string("Quit", (currentselection == EXIT_NUMBER) ? TextRed : TextWhite, 0, 5, 185-IPU_OFFSET_Y, (uint16_t*) backbuffer->pixels);
 		
         while (SDL_PollEvent(&Event))
         {
@@ -435,9 +446,15 @@ void Menu()
         {
             switch(currentselection)
             {
-				case 6-IPU_OFFSET:
+				case 7-IPU_OFFSET:
 					Input_Remapping();
 				break;
+                case 6 :
+                    if(option.showfps == 0)
+                        option.showfps = 1;
+                    else
+                        option.showfps = 0;
+                    break;
                 case 5-IPU_OFFSET:
                     option.fullscreen++;
                     if (option.fullscreen > upscalers_available)

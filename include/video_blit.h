@@ -22,9 +22,9 @@ void Set_Video_Menu();
 void Set_Video_InGame();
 void Close_Video();
 void Update_Video_Menu();
-void fpsCounter(void);
-void fpsLimiter(void);
-void fpsDrawer(void);
+void count_fps(void);
+void lock_fps(void);
+void draw_fps(void);
 void Update_Video_Ingame(void);
 void Clean_Video(void);
 

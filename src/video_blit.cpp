@@ -97,7 +97,7 @@ void Update_Video_Menu()
 
 uint16_t fps = 0;
 
-void fpsCounter(void)
+void count_fps(void)
 {
 	static unsigned int frames;
 	static uint16_t curTicks;
@@ -116,7 +116,7 @@ void fpsCounter(void)
 	++frames;
 }
 
-void fpsLimiter(void)
+void lock_fps(void)
 {
 	static uint16_t curTicks;
 	static uint16_t lastTicks;
@@ -133,7 +133,7 @@ void fpsLimiter(void)
 	SDL_Delay(1);
 }
 
-void fpsDrawer(void)
+void draw_fps(void)
 {
 	char str_fps[6];
 	sprintf(str_fps,"%d",fps);
@@ -180,10 +180,10 @@ void Update_Video_Ingame(void)
 			}
 		break;
 	}
-
-	fpsDrawer();
+    if(option.showfps == 1)
+	    draw_fps();
 	SDL_UnlockSurface(sdl_screen);
 	SDL_Flip(sdl_screen);
-	fpsCounter();
-	fpsLimiter();
+	count_fps();
+	lock_fps();
 }
