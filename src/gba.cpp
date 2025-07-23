@@ -8326,9 +8326,9 @@ static void gfxDrawOBJWin (void)
 	GBA.CPP
 ============================================================ */
 int saveType = 0;
-bool useBios = true;
-bool skipBios = false;
-bool cpuIsMultiBoot = false; 
+bool useBios;
+bool skipBios;
+bool cpuIsMultiBoot = false;
 int cpuSaveType = 0;
 bool enableRtc = false;
 bool mirroringEnable = false;

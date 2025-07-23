@@ -14,6 +14,7 @@
 #include "config.h"
 #include "menu.h"
 #include "gba.h"
+#include "globals.h"
 
 t_config option;
 uint32_t emulator_state = 0;
@@ -84,6 +85,16 @@ static void config_load()
 		option.fullscreen = 2;
         option.showfps = 0;
 	}
+    char filename_bios[256];
+    snprintf(filename_bios, sizeof(filename_bios), "%s/gba_bios.bin", home_path);
+
+    if (access(filename_bios, F_OK) == 0) {
+        useBios = true;
+        skipBios = false;
+    } else {
+        useBios = false;
+        skipBios = true;
+    }
 }
 
 static void config_save()
