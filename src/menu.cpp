@@ -18,7 +18,7 @@
 t_config option;
 uint32_t emulator_state = 0;
 
-static char home_path[256], save_path[264], eeprom_path[263], conf_path[261];
+char home_path[256], save_path[264], eeprom_path[263], conf_path[261];
 static uint32_t controls_chosen = 0;
 
 extern SDL_Surface *sdl_screen;

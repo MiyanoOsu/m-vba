@@ -233,7 +233,7 @@ static void load_image_preferences (void)
 static void gba_init(void)
 {
    if (useBios) {
-        snprintf(filename_bios, sizeof(filename_bios), "%s/.m-vba/gba_bios.bin", getenv("HOME"));
+        snprintf(filename_bios, sizeof(filename_bios), "%s/gba_bios.bin", home_path);
         printf("Loading bios: %s\n", filename_bios);
    }
    CPUInit(filename_bios, useBios);

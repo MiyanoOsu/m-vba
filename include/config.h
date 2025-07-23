@@ -17,6 +17,8 @@ typedef struct {
 } t_config;
 extern t_config option;
 
+extern char home_path[256], save_path[264], eeprom_path[263], conf_path[261];
+
 #ifdef __cplusplus
 };
 #endif
