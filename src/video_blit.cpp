@@ -118,20 +118,17 @@ void count_fps(void)
 
 void lock_fps(uint8_t fps)
 {
-	static uint16_t curTicks;
-	static uint16_t lastTicks;
-	float t;
+    static uint32_t lastTicks = 0; 
+    uint32_t currentTicks = SDL_GetTicks();
+    uint32_t targetTicks = 1000 / fps;
+    uint32_t elapsedTicks = currentTicks - lastTicks;
+    if (elapsedTicks < targetTicks) {
+        SDL_Delay(targetTicks - elapsedTicks);
+    }
 
-	curTicks = SDL_GetTicks();
-	t = curTicks - lastTicks;
-
-	if (t >= 1000.0f/fps)
-	{
-		lastTicks = curTicks;
-		return;
-	}
-	SDL_Delay(1);
+    lastTicks = SDL_GetTicks(); 
 }
+
 
 void draw_fps(void)
 {
