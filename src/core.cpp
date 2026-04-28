@@ -26,8 +26,6 @@ char GameName_emu[256];
 uint32_t frames = 0 ;
 uint32_t done = 0;
 
-char filename_bios[0x40];
-
 uint8_t save_buf[0x20000 + 0x2000];	/* Workaround for broken-by-design GBA save semantics. */
 
 static unsigned save_size = sizeof(save_buf);
@@ -233,11 +231,10 @@ static void load_image_preferences (void)
 static void gba_init(void)
 {
    if (useBios) {
-      snprintf(filename_bios, sizeof(filename_bios), "%s/gba_bios.bin", home_path);
-      printf("Loading bios: %s\n", filename_bios);
+      printf("Loading bios: %s\n", bios_path);
    }
 
-   CPUInit(filename_bios, useBios);
+   CPUInit(bios_path, useBios);
    cpuSaveType = 0;
    flashSize = 0x10000;
    enableRtc = 0;

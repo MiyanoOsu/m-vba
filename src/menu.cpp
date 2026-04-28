@@ -19,7 +19,7 @@
 t_config option;
 uint32_t emulator_state = 0;
 
-char home_path[256], save_path[264], eeprom_path[263], conf_path[261];
+char home_path[256], save_path[264], eeprom_path[263], conf_path[261], bios_path[300];
 static uint32_t controls_chosen = 0;
 
 extern SDL_Surface *sdl_screen;
@@ -85,10 +85,9 @@ static void config_load()
 		option.fullscreen = 2;
         option.showfps = 0;
 	}
-    char filename_bios[256];
-    snprintf(filename_bios, sizeof(filename_bios), "%s/gba_bios.bin", home_path);
+    snprintf(bios_path, sizeof(bios_path), "%s/gba_bios.bin", home_path);
 
-    if (access(filename_bios, F_OK) == 0) {
+    if (access(bios_path, F_OK) == 0) {
         useBios = true;
         skipBios = false;
     } else {
