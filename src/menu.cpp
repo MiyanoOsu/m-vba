@@ -28,18 +28,9 @@ extern char GameName_emu[256];
 extern void EEPROM_file(char* path, uint_fast8_t state);
 extern void SaveState(char* path, uint_fast8_t state);
 
-static uint8_t save_slot = 0;
-
 #define IPU_OFFSET 0
 #define IPU_OFFSET_Y 0
 static const int8_t upscalers_available = 2;
-
-static void SaveState_Menu(uint_fast8_t load_mode, uint_fast8_t slot)
-{
-	char tmp[528];
-	snprintf(tmp, sizeof(tmp), "%s/%s_%d.sts", save_path, GameName_emu, slot);
-	SaveState(tmp,load_mode);
-}
 
 void EEPROM_Menu(uint_fast8_t load_mode)
 {
@@ -185,6 +176,77 @@ static const char* Return_Text_Button(uint32_t button)
 			return "...";
 		break;
 	}	
+}
+
+const char *name_slot[9] = {"Slot 1", "Slot 2", "Slot 3", "Slot 4", "Slot 5", "Slot 6", "Slot 7", "Slot 8", "Slot 9"};
+
+static void SaveLoad_Menu(uint8_t type) {
+	SDL_Event Event;
+	uint8_t pressed = 0;
+	int32_t currentselection = 1;
+	int32_t exit_input = 0;
+	char tmp[528];
+
+	while(!exit_input)
+	{
+		pressed = 0;
+		SDL_FillRect( backbuffer, NULL, SDL_MapRGB(backbuffer->format, 0, 0, 0));
+		
+        while (SDL_PollEvent(&Event))
+        {
+            if(Event.type == SDL_QUIT)
+                SDL_Quit();
+            
+            if (Event.type == SDL_KEYDOWN)
+            {
+                switch(Event.key.keysym.sym)
+                {
+                    case SDLK_UP:
+                        currentselection--;
+                        if (currentselection < 1)
+                        {
+							if (currentselection > 9) currentselection = 1;
+							else currentselection = 9;
+						}
+                        break;
+                    case SDLK_DOWN:
+                        currentselection++;
+                        if (currentselection == 10)
+							currentselection = 1;
+                        break;
+                    case SDLK_LALT:
+                    case SDLK_RETURN:
+                        pressed = 1;
+					break;
+                    case SDLK_LCTRL:
+                        exit_input = 1;
+					break;
+					default:
+					break;
+                }
+            }
+
+			for(int i = 0; i< 9; i++) {	
+        		print_string(name_slot[i], (currentselection == i + 1) ? TextRed : TextWhite, 0, 5, 30 + 17*i, (uint16_t*) backbuffer->pixels);
+				snprintf(tmp, sizeof(tmp), "%s/%s_%d.sts", save_path, GameName_emu, i+1);
+				if (access(tmp, F_OK) == 0) {
+					print_string("<saved>", (currentselection == i + 1) ? TextRed : TextWhite, 0, 65, 30 + 17*i, (uint16_t*) backbuffer->pixels);
+				}
+			}
+
+			if(pressed) {
+				snprintf(tmp, sizeof(tmp), "%s/%s_%d.sts", save_path, GameName_emu, currentselection);
+				if (access(tmp, F_OK) != 0 && type == 1) {
+					print_string("Nothing to load!", TextRed, 0, 70, 15, (uint16_t*) backbuffer->pixels);
+				} else {
+					SaveState(tmp,type);
+					exit_input = 1;
+				}
+					
+			}
+			Update_Video_Menu();
+        }
+	}
 }
 
 static void Input_Remapping()
@@ -347,10 +409,10 @@ void Menu()
 		print_string("Continue", (currentselection == 1) ? TextRed : TextWhite, 0, 5, 45, (uint16_t*) backbuffer->pixels);
 
 		
-		snprintf(text, sizeof(text), "Load State %d", save_slot);
+		snprintf(text, sizeof(text), "Load State");
 		print_string(text, (currentselection == 2) ? TextRed : TextWhite, 0, 5, 65, (uint16_t*) backbuffer->pixels);
 
-		snprintf(text, sizeof(text), "Save State %d", save_slot);
+		snprintf(text, sizeof(text), "Save State");
 		print_string(text, (currentselection == 3) ? TextRed : TextWhite, 0, 5, 85, (uint16_t*) backbuffer->pixels);
 
         print_string("Reset", (currentselection == 4) ? TextRed : TextWhite, 0, 5, 105, (uint16_t*) backbuffer->pixels);
@@ -414,10 +476,6 @@ void Menu()
                     case SDLK_LEFT:
                         switch(currentselection)
                         {
-                            case 2:
-                            case 3:
-                                if (save_slot > 0) save_slot--;
-							break;
                             case 5:
 							option.fullscreen--;
 							if (option.fullscreen < 0)
@@ -428,12 +486,6 @@ void Menu()
                     case SDLK_RIGHT:
                         switch(currentselection)
                         {
-                            case 2:
-                            case 3:
-                                save_slot++;
-								if (save_slot == 10)
-									save_slot = 9;
-							break;
                             case 5:
                                 option.fullscreen++;
                                 if (option.fullscreen > upscalers_available)
@@ -464,23 +516,21 @@ void Menu()
                         option.showfps = 1;
                     else
                         option.showfps = 0;
-                    break;
+                break;
                 case 5-IPU_OFFSET:
                     option.fullscreen++;
                     if (option.fullscreen > upscalers_available)
                         option.fullscreen = 0;
-                    break;
+                break;
                 case 4 :
                     CPUReset();
                     currentselection = 1;
-                    break;
+                break;
                 case 2 :
-                    SaveState_Menu(1, save_slot);
-					currentselection = 1;
-                    break;
+					SaveLoad_Menu(1);
+                break;
                 case 3 :
-					SaveState_Menu(0, save_slot);
-					currentselection = 1;
+					SaveLoad_Menu(0);
 				break;
             }
         }
