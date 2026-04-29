@@ -133,8 +133,8 @@ void Audio_Write(int16_t* buffer, uint32_t buffer_size)
             }
             else if (frames_written == -EAGAIN)  // Try again
             {
-                continue;
-            }
+                snd_pcm_wait(handle, 1000);
+			}
             else
             {
                 fprintf(stderr, "ALSA write error: %s\n", snd_strerror(frames_written));
