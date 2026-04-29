@@ -15,8 +15,8 @@ CFLAGS = -Iinclude -march=armv5te -mtune=arm926ej-s -O2  -fno-common -Wall -std=
 
 ASFLAGS = -march=armv5te -mtune=arm926ej-s
 
-LDFLAGS = -march=armv5te -mtune=arm926ej-s  \
-	  -lc -lgcc -lm -lSDL -lasound -lz -Wl,--as-needed -Wl,--gc-sections  
+LDFLAGS = -march=armv5te -mtune=arm926ej-s -static  \
+	  -lc -lgcc -lm `sdl-config --libs` -lasound -lz -Wl,--as-needed -Wl,--gc-sections  
 
 #PGO = YES
 PGO = APPLY
@@ -32,7 +32,7 @@ endif
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CC) $(LDFLAGS) $(OBJS) -o $@
+	$(CC) $(OBJS) -o $@ $(LDFLAGS)
 	@echo Done!!!
 
 %.o: %.S
