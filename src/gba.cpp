@@ -67,13 +67,14 @@ uint8_t *rom = 0;
 uint8_t *bios = 0;
 uint8_t *vram = 0;
 
+#ifdef VIRTUAL_SURFACE
 uint16_t *pix = NULL;
-#ifndef VIRTUAL_SCREEN
+#endif
+
 #include <SDL/SDL.h>
 extern SDL_Surface *sdl_screen;
 #define DRAW_UNLOCK SDL_UnlockSurface(sdl_screen);
 #define DRAW_LOCK SDL_LockSurface(sdl_screen);
-#endif
 
 uint8_t *oam = 0;
 uint8_t *ioMem = 0;
@@ -8943,7 +8944,11 @@ bool CPUSetupBuffers()
 
 	if( workRAM == NULL || bios == NULL ||
 	   internalRAM == NULL || paletteRAM == NULL ||
-	   vram == NULL || oam == NULL || pix == NULL || ioMem == NULL) {
+	   vram == NULL || oam == NULL 
+#ifdef VIRTUAL_SURFACE
+	   || pix == NULL 
+#endif
+	   || ioMem == NULL) {
 		CPUCleanUp();
 		return false;
 	}
@@ -9036,7 +9041,13 @@ void doMirroring (bool b)
 
 /* we only use 16bit color depth */
 
+#ifdef VIRTUAL_SURFACE
 #define GET_LINE_MIX (pix + PIX_BUFFER_SCREEN_WIDTH * R_VCOUNT)
+#else
+// for 320x240, native resolution of gba is 240x160
+// -> 320-240 = 80 (dont divide by 2 because i do it in uint8_t), (240-160)/2 = 40
+#define GET_LINE_MIX ((uint16_t *)((uint8_t *)sdl_screen->pixels + 80 + ( sdl_screen->pitch * (R_VCOUNT + 40))))
+#endif
 
 template<int renderer_idx>
 static void mode0RenderLine (void)

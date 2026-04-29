@@ -19,10 +19,6 @@ static SDL_Joystick *sdl_joy;
 #define SDL_TRIPLEBUF SDL_DOUBLEBUF
 #endif
 
-#ifndef VIRTUAL_SURFACE
-#error "VIRTUAL_SURFACE needs to be defined. Redo the compilation"
-#endif
-
 SDL_Surface *sdl_screen, *backbuffer;
 
 uint32_t width_of_surface;
@@ -144,6 +140,7 @@ void draw_fps(void)
 
 void Update_Video_Ingame(void)
 {
+#ifdef VIRTUAL_SURFACE
 	uint_fast16_t y, pitch;
 	uint32_t internal_width, internal_height;
 	uint16_t *source_graph, *src, *dst;
@@ -177,7 +174,7 @@ void Update_Video_Ingame(void)
 			}
 		break;
 	}
-    
+#endif
     if(option.showfps == 1) {
 	    draw_fps();
         count_fps();

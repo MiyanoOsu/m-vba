@@ -30,7 +30,9 @@ extern int cpuDmaCount;
 extern uint8_t *rom;
 extern uint8_t *bios;
 extern uint8_t *vram;
+#ifdef VIRTUAL_SURFACE
 extern uint16_t *pix;
+#endif
 extern uint8_t *oam;
 extern uint8_t *ioMem;
 extern uint8_t *internalRAM;
