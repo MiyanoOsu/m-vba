@@ -11,12 +11,13 @@ VPATH = ./src
 
 CFLAGS = -Iinclude -march=armv5te -mtune=arm926ej-s -O2  -fno-common -Wall -std=gnu++11 \
 	-DLSB_FIRST -DWANT_16BPP -DFRONTEND_SUPPORTS_RGB565 -DNDEBUG -DWANT_STEREO_SOUND  \
-	-DVIRTUAL_SURFACE `sdl-config --cflags`
+	`sdl-config --cflags` -funroll-loops -fno-strict-aliasing		\
+	-fomit-frame-pointer
 
 ASFLAGS = -march=armv5te -mtune=arm926ej-s
 
-LDFLAGS = -march=armv5te -mtune=arm926ej-s -static  \
-	  -lc -lgcc -lm `sdl-config --libs` -lasound -lz -Wl,--as-needed -Wl,--gc-sections  
+LDFLAGS = -march=armv5te -mtune=arm926ej-s -static -DVIRTUAL_SURFACE \
+	-lc -lgcc -lm `sdl-config --libs` -lasound -lz -Wl,--as-needed -Wl,--gc-sections
 
 #PGO = YES
 PGO = APPLY
@@ -26,7 +27,7 @@ CFLAGS += -fprofile-generate=./profile
 LDFLAGS += -lgcov -fprofile-generate=./profile
 TARGET = m-vba_pm
 else ifeq ($(PGO), APPLY)
-CFLAGS += -fprofile-use=./ -fbranch-probabilities
+CFLAGS += -fprofile-use=./profile -fbranch-probabilities
 endif
 
 all: $(TARGET)

@@ -10,11 +10,8 @@
 	#define USE_TWEAK_MEMFUNC 1
 #endif
 
-/* Gameblabla - Was 256 before. Possibly done for alignment on other platforms but we will use 240 
- * for IPU activated devices because it allows us to directly draw to the screen instead of a 
- * secondary buffer. Use 256 as before on other platforms. */
-
-#define PIX_BUFFER_SCREEN_WIDTH 240
+// keep it unsigned integers for unroll loops work
+#define PIX_BUFFER_SCREEN_WIDTH 240u
 
 extern int saveType;
 extern bool useBios;

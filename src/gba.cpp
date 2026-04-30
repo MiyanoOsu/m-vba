@@ -9079,8 +9079,10 @@ static void mode0RenderLine (void)
 	if(RENDERER_R_DISPCNT_Screen_Display_BG3) {
 		gfxDrawTextScreen<Layer_BG3, renderer_idx>(RENDERER_IO_REGISTERS[REG_BG3CNT], RENDERER_IO_REGISTERS[REG_BG3HOFS], RENDERER_IO_REGISTERS[REG_BG3VOFS]);
 	}
+	
+#pragma GCC unroll 4
 
-	for(int x = 0; x < 240; x++)
+	for(uint32_t x = 0; x < PIX_BUFFER_SCREEN_WIDTH; x++)
 	{
 		uint32_t color = backdrop;
 		uint8_t top = SpecialEffectTarget_BD;
@@ -9174,7 +9176,9 @@ static void mode0RenderLineNoWindow (void)
 		gfxDrawTextScreen<Layer_BG3, renderer_idx>(RENDERER_IO_REGISTERS[REG_BG3CNT], RENDERER_IO_REGISTERS[REG_BG3HOFS], RENDERER_IO_REGISTERS[REG_BG3VOFS]);
 	}
 
-	for(int x = 0; x < 240; x++) {
+#pragma GCC unroll 4
+
+	for(uint32_t x = 0; x < PIX_BUFFER_SCREEN_WIDTH; x++) {
 		uint32_t color = backdrop;
 		uint8_t top = SpecialEffectTarget_BD;
 
@@ -9348,7 +9352,9 @@ static void mode0RenderLineAll (void)
 	uint8_t inWin1Mask = RENDERER_R_WIN_Window1_Mask;
 	uint8_t outMask = RENDERER_R_WIN_Outside_Mask;
 
-	for(int x = 0; x < 240; x++) {
+#pragma GCC unroll 4
+
+	for(uint8_t x = 0; x < PIX_BUFFER_SCREEN_WIDTH; x++) {
 		uint32_t color = backdrop;
 		uint8_t top = SpecialEffectTarget_BD;
 		uint8_t mask = outMask;
@@ -9511,7 +9517,9 @@ static void mode1RenderLine (void)
 				RENDERER_BG2X, RENDERER_BG2Y, RENDERER_BG2C);
 	}
 
-	for(uint32_t x = 0; x < 240u; ++x) {
+#pragma GCC unroll 4
+
+	for(uint32_t x = 0; x < PIX_BUFFER_SCREEN_WIDTH; ++x) {
 		uint32_t color = backdrop;
 		uint8_t top = SpecialEffectTarget_BD;
 
@@ -9609,7 +9617,9 @@ static void mode1RenderLineNoWindow (void)
 				RENDERER_BG2X, RENDERER_BG2Y, RENDERER_BG2C);
 	}
 
-	for(int x = 0; x < 240; ++x) {
+#pragma GCC unroll 4
+
+	for(uint32_t x = 0; x < PIX_BUFFER_SCREEN_WIDTH; ++x) {
 		uint32_t color = backdrop;
 		uint8_t top = SpecialEffectTarget_BD;
 
@@ -9779,7 +9789,9 @@ static void mode1RenderLineAll (void)
 	uint8_t inWin1Mask = RENDERER_R_WIN_Window1_Mask;
 	uint8_t outMask = RENDERER_R_WIN_Outside_Mask;
 
-	for(int x = 0; x < 240; ++x) {
+#pragma GCC unroll 4
+
+	for(uint32_t x = 0; x < PIX_BUFFER_SCREEN_WIDTH; ++x) {
 		uint32_t color = backdrop;
 		uint8_t top = SpecialEffectTarget_BD;
 		uint8_t mask = outMask;
@@ -9924,7 +9936,9 @@ static void mode2RenderLine (void)
 				RENDERER_BG3X, RENDERER_BG3Y, RENDERER_BG3C);
 	}
 
-	for(int x = 0; x < 240; ++x) {
+#pragma GCC unroll 4
+
+	for(uint32_t x = 0; x < PIX_BUFFER_SCREEN_WIDTH; ++x) {
 		uint32_t color = backdrop;
 		uint8_t top = SpecialEffectTarget_BD;
 
@@ -10008,7 +10022,9 @@ static void mode2RenderLineNoWindow (void)
 				RENDERER_BG3X, RENDERER_BG3Y, RENDERER_BG3C);
 	}
 
-	for(int x = 0; x < 240; ++x) {
+#pragma GCC unroll 4
+
+	for(uint32_t x = 0; x < PIX_BUFFER_SCREEN_WIDTH; ++x) {
 		uint32_t color = backdrop;
 		uint8_t top = SpecialEffectTarget_BD;
 
@@ -10151,7 +10167,9 @@ static void mode2RenderLineAll (void)
 	uint8_t inWin1Mask = RENDERER_R_WIN_Window1_Mask;
 	uint8_t outMask = RENDERER_R_WIN_Outside_Mask;
 
-	for(int x = 0; x < 240; x++) {
+#pragma GCC unroll 4
+
+	for(uint32_t x = 0; x < PIX_BUFFER_SCREEN_WIDTH; x++) {
 		uint32_t color = backdrop;
 		uint8_t top = SpecialEffectTarget_BD;
 		uint8_t mask = outMask;
@@ -10271,7 +10289,9 @@ static void mode3RenderLine (void)
 		gfxDrawRotScreen16Bit<renderer_idx>(RENDERER_BG2X, RENDERER_BG2Y, RENDERER_BG2C);
 	}
 
-	for(int x = 0; x < 240; ++x) {
+#pragma GCC unroll 4
+
+	for(uint32_t x = 0; x < PIX_BUFFER_SCREEN_WIDTH; ++x) {
 		uint32_t color = background;
 		uint8_t top = SpecialEffectTarget_BD;
 
@@ -10322,7 +10342,9 @@ INIT_RENDERER_CONTEXT(renderer_idx);
 		gfxDrawRotScreen16Bit<renderer_idx>(RENDERER_BG2X, RENDERER_BG2Y, RENDERER_BG2C);
 	}
 
-	for(int x = 0; x < 240; ++x) {
+#pragma GCC unroll 4
+
+	for(uint32_t x = 0; x < PIX_BUFFER_SCREEN_WIDTH; ++x) {
 		uint32_t color = background;
 		uint8_t top = SpecialEffectTarget_BD;
 
@@ -10430,7 +10452,9 @@ static void mode3RenderLineAll (void)
 	uint8_t inWin1Mask = RENDERER_R_WIN_Window1_Mask;
 	uint8_t outMask = RENDERER_R_WIN_Outside_Mask;
 
-	for(int x = 0; x < 240; ++x) {
+#pragma GCC unroll 4
+
+	for(uint32_t x = 0; x < PIX_BUFFER_SCREEN_WIDTH; ++x) {
 		uint32_t color = background;
 		uint8_t top = SpecialEffectTarget_BD;
 		uint8_t mask = outMask;
@@ -10532,7 +10556,9 @@ static void mode4RenderLine (void)
 		gfxDrawRotScreen256<renderer_idx>(RENDERER_BG2X, RENDERER_BG2Y, RENDERER_BG2C);
 	}
 
-	for(int x = 0; x < 240; ++x)
+#pragma GCC unroll 4
+
+	for(uint32_t x = 0; x < PIX_BUFFER_SCREEN_WIDTH; ++x)
 	{
 		uint32_t color = backdrop;
 		uint8_t top = SpecialEffectTarget_BD;
@@ -10583,7 +10609,9 @@ static void mode4RenderLineNoWindow (void)
 		gfxDrawRotScreen256<renderer_idx>(RENDERER_BG2X, RENDERER_BG2Y, RENDERER_BG2C);
 	}
 
-	for(int x = 0; x < 240; ++x)
+#pragma GCC unroll 4
+
+	for(uint32_t x = 0; x < PIX_BUFFER_SCREEN_WIDTH; ++x)
 	{
 		uint32_t color = backdrop;
 		uint8_t top = SpecialEffectTarget_BD;
@@ -10691,7 +10719,9 @@ static void mode4RenderLineAll (void)
 	uint8_t inWin1Mask = RENDERER_R_WIN_Window1_Mask;
 	uint8_t outMask = RENDERER_R_WIN_Outside_Mask;
 
-	for(int x = 0; x < 240; ++x) {
+#pragma GCC unroll 4
+
+	for(uint32_t x = 0; x < PIX_BUFFER_SCREEN_WIDTH; ++x) {
 		uint32_t color = backdrop;
 		uint8_t top = SpecialEffectTarget_BD;
 		uint8_t mask = outMask;
@@ -10795,7 +10825,9 @@ static void mode5RenderLine (void)
 		gfxDrawRotScreen16Bit160<renderer_idx>(RENDERER_BG2X, RENDERER_BG2Y, RENDERER_BG2C);
 	}
 
-	for(int x = 0; x < 240; ++x) {
+#pragma GCC unroll 4
+
+	for(uint32_t x = 0; x < PIX_BUFFER_SCREEN_WIDTH; ++x) {
 		uint32_t color = background;
 		uint8_t top = SpecialEffectTarget_BD;
 
@@ -10845,7 +10877,9 @@ static void mode5RenderLineNoWindow (void)
 		gfxDrawRotScreen16Bit160<renderer_idx>(RENDERER_BG2X, RENDERER_BG2Y, RENDERER_BG2C);
 	}
 
-	for(int x = 0; x < 240; ++x) {
+#pragma GCC unroll 4
+
+	for(uint32_t x = 0; x < PIX_BUFFER_SCREEN_WIDTH; ++x) {
 		uint32_t color = background;
 		uint8_t top = SpecialEffectTarget_BD;
 
@@ -10953,7 +10987,9 @@ static void mode5RenderLineAll (void)
 	uint8_t inWin1Mask = RENDERER_R_WIN_Window1_Mask;
 	uint8_t outMask = RENDERER_R_WIN_Outside_Mask;
 
-	for(int x = 0; x < 240; ++x) {
+#pragma GCC unroll 4
+
+	for(uint32_t x = 0; x < PIX_BUFFER_SCREEN_WIDTH; ++x) {
 		uint32_t color = background;
 		uint8_t top = SpecialEffectTarget_BD;
 		uint8_t mask = outMask;
