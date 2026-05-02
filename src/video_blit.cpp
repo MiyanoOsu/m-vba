@@ -174,17 +174,12 @@ void Update_Video_Ingame(void)
 			}
 		break;
 	}
-#endif
-
 	if(option.showfps == 1) {
 	    draw_fps();
         count_fps();
     }
-
-#ifdef VIRTUAL_SURFACE
 	SDL_UnlockSurface(sdl_screen);
-#endif
-
 	SDL_Flip(sdl_screen);
+#endif
 	//lock_fps(60);
 }

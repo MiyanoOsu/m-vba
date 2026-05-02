@@ -12,11 +12,11 @@ VPATH = ./src
 CFLAGS = -Iinclude -march=armv5te -mtune=arm926ej-s -O2  -fno-common -Wall -std=gnu++11 \
 	-DLSB_FIRST -DWANT_16BPP -DFRONTEND_SUPPORTS_RGB565 -DNDEBUG -DWANT_STEREO_SOUND  \
 	`sdl-config --cflags` -funroll-loops -fno-strict-aliasing		\
-	-fomit-frame-pointer
+	-fomit-frame-pointer -DVIRTUAL_SURFACE
 
 ASFLAGS = -march=armv5te -mtune=arm926ej-s
 
-LDFLAGS = -march=armv5te -mtune=arm926ej-s -static -DVIRTUAL_SURFACE \
+LDFLAGS = -march=armv5te -mtune=arm926ej-s -static \
 	-lc -lgcc -lm `sdl-config --libs` -lasound -lz -Wl,--as-needed -Wl,--gc-sections
 
 #PGO = YES

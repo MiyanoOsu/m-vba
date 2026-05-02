@@ -17,7 +17,7 @@ CFLAGS = -Iinclude -O2 -fno-common -Wall -std=gnu++11 \
 
 ASFLAGS = 
 
-LDFLAGS = -lc -lgcc -lm -lSDL -lasound -lz -Wl,--as-needed -Wl,--gc-sections 
+LDFLAGS = -lc -lgcc -lm `sdl-config --libs` -lasound -lz -Wl,--as-needed -Wl,--gc-sections 
 
 all: $(TARGET)
 
