@@ -179,7 +179,8 @@ void Update_Video_Ingame(void)
         count_fps();
     }
 	SDL_UnlockSurface(sdl_screen);
-	SDL_Flip(sdl_screen);
+	
 #endif
+	SDL_Flip(sdl_screen);
 	//lock_fps(60);
 }
