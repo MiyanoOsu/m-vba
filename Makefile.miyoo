@@ -12,7 +12,7 @@ VPATH = ./src
 CFLAGS = -Iinclude -march=armv5te -mtune=arm926ej-s -O2  -fno-common -Wall -std=gnu++11 \
 	-DLSB_FIRST -DWANT_16BPP -DFRONTEND_SUPPORTS_RGB565 -DNDEBUG -DWANT_STEREO_SOUND  \
 	`sdl-config --cflags` -funroll-loops -fno-strict-aliasing		\
-	-fomit-frame-pointer -DVIRTUAL_SURFACE
+	-fomit-frame-pointer -DVIRTUAL_SURFACE -DTILED_RENDERING
 
 ASFLAGS = -march=armv5te -mtune=arm926ej-s
 
